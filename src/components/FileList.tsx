@@ -1,17 +1,18 @@
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { useDropzone } from 'react-dropzone';
-import { fetchFiles, uploadFile } from '../store/filesSlice';
-import type { AppDispatch, RootState } from '../store/store';
-import { Upload, File, Image, FileText } from 'lucide-react';
-import { formatFileSize } from '../utils/formatters';
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { useDropzone } from "react-dropzone";
+import { fetchFiles, uploadFile } from "../store/filesSlice";
+import type { AppDispatch, RootState } from "../store/store";
+import { Upload, File, Image, FileText } from "lucide-react";
+import { formatFileSize } from "../utils/formatters";
 
 export default function FileList() {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  const { files, status, error } = useSelector((state: RootState) => state.files);
-
+  const { files, status, error } = useSelector(
+    (state: RootState) => state.files
+  );
   const onDrop = React.useCallback(
     (acceptedFiles: File[]) => {
       acceptedFiles.forEach((file) => {
@@ -24,22 +25,24 @@ export default function FileList() {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: {
-      'image/*': ['.jpeg', '.jpg', '.png'],
-      'text/plain': ['.txt'],
-      'application/json': ['.json'],
+      "image/*": [".jpeg", ".jpg", ".png"],
+      "text/plain": [".txt"],
+      "application/json": [".json"],
     },
     maxSize: 5 * 1024 * 1024, // 5MB
   });
 
   useEffect(() => {
-    if (status === 'idle') {
+    if (status === "idle") {
       dispatch(fetchFiles());
     }
   }, [status, dispatch]);
 
   const getFileIcon = (mimetype: string) => {
-    if (mimetype.startsWith('image/')) return <Image className="w-6 h-6 text-blue-500" />;
-    if (mimetype === 'text/plain') return <FileText className="w-6 h-6 text-green-500" />;
+    if (mimetype.startsWith("image/"))
+      return <Image className="w-6 h-6 text-blue-500" />;
+    if (mimetype === "text/plain")
+      return <FileText className="w-6 h-6 text-green-500" />;
     return <File className="w-6 h-6 text-gray-500" />;
   };
 
@@ -47,8 +50,8 @@ export default function FileList() {
     <div className="space-y-6">
       <div
         {...getRootProps()}
-        className={`border-2 border-dashed rounded-lg p-8 text-center ${
-          isDragActive ? 'border-blue-500 bg-blue-50' : 'border-gray-300'
+        className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer ${
+          isDragActive ? "border-blue-500 bg-blue-50" : "border-gray-300"
         }`}
       >
         <input {...getInputProps()} />
@@ -61,7 +64,7 @@ export default function FileList() {
         </p>
       </div>
 
-      {status === 'loading' && (
+      {status === "loading" && (
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto"></div>
         </div>
@@ -83,9 +86,12 @@ export default function FileList() {
             >
               {getFileIcon(file.mimetype)}
               <div className="ml-4 flex-1">
-                <p className="text-sm font-medium text-gray-900">{file.originalName}</p>
+                <p className="text-sm font-medium text-gray-900">
+                  {file.originalName}
+                </p>
                 <p className="text-sm text-gray-500">
-                  {formatFileSize(file.size)} • {new Date(file.uploadDate).toLocaleDateString()}
+                  {formatFileSize(file.size)} •{" "}
+                  {new Date(file.uploadDate).toLocaleDateString()}
                 </p>
               </div>
             </li>

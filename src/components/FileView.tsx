@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { useParams, useNavigate } from 'react-router-dom';
 import { RootState } from '../store/store';
 import { ArrowLeft, Download } from 'lucide-react';
+import { formatFileSize } from '../utils/formatters';
 
 export default function FileView() {
   const { id } = useParams<{ id: string }>();
