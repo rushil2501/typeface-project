@@ -13,6 +13,7 @@ export default function FileList() {
   const { files, status, error } = useSelector(
     (state: RootState) => state.files
   );
+
   const onDrop = React.useCallback(
     (acceptedFiles: File[]) => {
       acceptedFiles.forEach((file) => {
@@ -48,54 +49,67 @@ export default function FileList() {
 
   return (
     <div className="space-y-6">
+      {/* Upload Area */}
       <div
         {...getRootProps()}
-        className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer ${
-          isDragActive ? "border-blue-500 bg-blue-50" : "border-gray-300"
+        className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition ${
+          isDragActive
+            ? "border-blue-500 bg-blue-50"
+            : "border-gray-300 hover:bg-gray-100"
         }`}
       >
         <input {...getInputProps()} />
-        <Upload className="mx-auto h-12 w-12 text-gray-400" />
-        <p className="mt-2 text-sm text-gray-600">
-          Drag 'n' drop files here, or click to select files
+        <Upload className="mx-auto h-12 w-12 text-blue-400" />
+        <p className="mt-2 text-lg font-semibold text-gray-800">
+          Drag & Drop files here, or <span className="text-blue-500 underline">browse</span>
         </p>
-        <p className="mt-1 text-xs text-gray-500">
-          Supported files: Images (JPG, PNG), Text files, JSON (Max: 5MB)
+        <p className="mt-1 text-sm text-gray-500">
+          Supported: Images (JPG, PNG), Text, JSON (Max: 5MB)
         </p>
       </div>
 
+      {/* Loading Indicator */}
       {status === "loading" && (
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto"></div>
+          <p className="text-gray-600 mt-2">Loading files...</p>
         </div>
       )}
 
+      {/* Error Message */}
       {error && (
-        <div className="bg-red-50 p-4 rounded-md">
-          <p className="text-red-700">{error}</p>
+        <div className="bg-red-50 border border-red-300 text-red-700 p-4 rounded-md shadow">
+          <p>{error}</p>
         </div>
       )}
 
-      <div className="bg-white shadow rounded-lg overflow-hidden">
+      {/* File List */}
+      <div className="bg-white shadow-lg rounded-lg overflow-hidden">
         <ul className="divide-y divide-gray-200">
-          {files.map((file) => (
-            <li
-              key={file._id}
-              className="p-4 hover:bg-gray-50 cursor-pointer flex items-center"
-              onClick={() => navigate(`/file/${file._id}`)}
-            >
-              {getFileIcon(file.mimetype)}
-              <div className="ml-4 flex-1">
-                <p className="text-sm font-medium text-gray-900">
-                  {file.originalName}
-                </p>
-                <p className="text-sm text-gray-500">
-                  {formatFileSize(file.size)} •{" "}
-                  {new Date(file.uploadDate).toLocaleDateString()}
-                </p>
-              </div>
+          {files.length > 0 ? (
+            files.map((file) => (
+              <li
+                key={file._id}
+                className="p-4 hover:bg-gray-100 cursor-pointer flex items-center transition"
+                onClick={() => navigate(`/file/${file._id}`)}
+              >
+                {getFileIcon(file.mimetype)}
+                <div className="ml-4 flex-1">
+                  <p className="text-sm font-medium text-gray-900">
+                    {file.originalName}
+                  </p>
+                  <p className="text-xs text-gray-500">
+                    {formatFileSize(file.size)} •{" "}
+                    {new Date(file.uploadDate).toLocaleDateString()}
+                  </p>
+                </div>
+              </li>
+            ))
+          ) : (
+            <li className="p-6 text-center text-gray-500">
+              No files uploaded yet.
             </li>
-          ))}
+          )}
         </ul>
       </div>
     </div>

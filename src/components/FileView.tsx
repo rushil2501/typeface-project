@@ -1,9 +1,9 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-import { useParams, useNavigate } from 'react-router-dom';
-import { RootState } from '../store/store';
-import { ArrowLeft, Download } from 'lucide-react';
-import { formatFileSize } from '../utils/formatters';
+import React from "react";
+import { useSelector } from "react-redux";
+import { useParams, useNavigate } from "react-router-dom";
+import { RootState } from "../store/store";
+import { ArrowLeft, Download } from "lucide-react";
+import { formatFileSize } from "../utils/formatters";
 
 export default function FileView() {
   const { id } = useParams<{ id: string }>();
@@ -14,8 +14,8 @@ export default function FileView() {
 
   if (!file) {
     return (
-      <div className="text-center">
-        <p className="text-gray-500">File not found</p>
+      <div className="flex items-center justify-center h-screen">
+        <p className="text-lg font-medium text-gray-500">File not found.</p>
       </div>
     );
   }
@@ -25,49 +25,56 @@ export default function FileView() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="max-w-4xl mx-auto p-6 space-y-6">
+      {/* Header Section */}
       <div className="flex items-center justify-between">
         <button
-          onClick={() => navigate('/')}
-          className="flex items-center text-gray-600 hover:text-gray-900"
+          onClick={() => navigate("/")}
+          className="flex items-center text-gray-600 hover:text-gray-900 transition"
         >
           <ArrowLeft className="w-5 h-5 mr-2" />
-          Back to files
+          <span className="font-medium">Back to Files</span>
         </button>
         <button
           onClick={handleDownload}
-          className="flex items-center px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+          className="flex items-center px-4 py-2 bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600 transition"
         >
           <Download className="w-5 h-5 mr-2" />
           Download
         </button>
       </div>
 
-      <div className="bg-white shadow rounded-lg p-6">
-        <h1 className="text-2xl font-bold text-gray-900 mb-4">{file.originalName}</h1>
-        <div className="grid grid-cols-2 gap-4 text-sm">
+      {/* File Details Section */}
+      <div className="bg-white shadow-lg rounded-lg p-6">
+        <h1 className="text-2xl font-bold text-gray-900 mb-4">
+          {file.originalName}
+        </h1>
+        <div className="grid grid-cols-2 gap-6 text-sm">
           <div>
-            <p className="text-gray-500">Type</p>
-            <p className="font-medium">{file.mimetype}</p>
+            <p className="text-gray-500">File Type</p>
+            <p className="font-medium text-gray-800">{file.mimetype}</p>
           </div>
           <div>
             <p className="text-gray-500">Size</p>
-            <p className="font-medium">{formatFileSize(file.size)}</p>
+            <p className="font-medium text-gray-800">
+              {formatFileSize(file.size)}
+            </p>
           </div>
           <div>
-            <p className="text-gray-500">Uploaded</p>
-            <p className="font-medium">
+            <p className="text-gray-500">Uploaded On</p>
+            <p className="font-medium text-gray-800">
               {new Date(file.uploadDate).toLocaleDateString()}
             </p>
           </div>
         </div>
 
-        {file.mimetype.startsWith('image/') && (
-          <div className="mt-6">
+        {/* Image Preview */}
+        {file.mimetype.startsWith("image/") && (
+          <div className="mt-6 flex justify-center">
             <img
               src={`http://localhost:3000/api/files/${id}`}
               alt={file.originalName}
-              className="max-w-full rounded-lg"
+              className="max-w-lg w-full rounded-lg shadow-lg border border-gray-200"
             />
           </div>
         )}
